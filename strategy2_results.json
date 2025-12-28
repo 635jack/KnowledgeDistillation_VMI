@@ -1,0 +1,26 @@
+{
+  "teacher": {
+    "tag": "Teacher_ResNet50",
+    "params": 23528522,
+    "best_val_acc": 0.9062,
+    "test_acc": 0.905
+  },
+  "student_baseline": {
+    "tag": "Student_Baseline",
+    "params": 11181642,
+    "best_val_acc": 0.8764,
+    "test_acc": 0.876
+  },
+  "student_kd_scores": {
+    "tag": "Student_KD_Scores",
+    "params": 11181642,
+    "best_val_acc": 0.8828,
+    "test_acc": 0.8875
+  },
+  "student_kd_full": {
+    "tag": "Student_KD_Full",
+    "params": 11181642,
+    "best_val_acc": 0.1068,
+    "test_acc": 0.0933
+  }
+}
