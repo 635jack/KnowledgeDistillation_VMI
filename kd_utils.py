@@ -363,6 +363,29 @@ def feature_loss_mse(student_features: Dict[str, torch.Tensor],
     return total_loss / len(student_features)
 
 
+def feature_loss_l1(student_features: Dict[str, torch.Tensor],
+                    teacher_features: Dict[str, torch.Tensor],
+                    adapters: Optional[Dict[str, FeatureAdapter]] = None) -> torch.Tensor:
+    """L1 loss on intermediate features"""
+    total_loss = 0.0
+    
+    for name in student_features:
+        s_feat = student_features[name]
+        t_feat = teacher_features[name]
+        
+        # Apply adapter if dimensions don't match
+        if adapters and name in adapters:
+            s_feat = adapters[name](s_feat)
+        
+        # Ensure same spatial dimensions
+        if s_feat.shape[-2:] != t_feat.shape[-2:]:
+            s_feat = F.adaptive_avg_pool2d(s_feat, t_feat.shape[-2:])
+        
+        total_loss += F.l1_loss(s_feat, t_feat)
+    
+    return total_loss / len(student_features)
+
+
 def feature_loss_cosine(student_features: Dict[str, torch.Tensor],
                         teacher_features: Dict[str, torch.Tensor],
                         adapters: Optional[Dict[str, FeatureAdapter]] = None) -> torch.Tensor:
@@ -640,6 +663,8 @@ def train_epoch(model: nn.Module, loader: DataLoader, optimizer,
                     
                     if feat_metric == 'cosine':
                         feat_loss = feature_loss_cosine(student_feats, teacher_feats, adapters)
+                    elif feat_metric == 'l1':
+                        feat_loss = feature_loss_l1(student_feats, teacher_feats, adapters)
                     elif feat_metric == 'skd':
                         feat_loss = skd_affinity_loss(student_feats, teacher_feats)
                     else:
