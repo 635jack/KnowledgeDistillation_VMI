@@ -28,6 +28,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib import cm
+import pandas as pd
+import seaborn as sns
+import plotly.express as px
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 # ============================================================================
 # CONFIGURATION
